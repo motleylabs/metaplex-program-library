@@ -3,7 +3,7 @@ pub mod common;
 pub mod utils;
 use anchor_lang::AccountDeserialize;
 
-use mpl_auction_house::{pda::*, AuctionHouse};
+use mtly_auction_house::{pda::*, AuctionHouse};
 use mpl_testing_utils::{
     assert_error,
     solana::{airdrop, create_associated_token_account, create_mint},

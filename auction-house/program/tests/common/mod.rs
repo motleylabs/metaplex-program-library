@@ -1,6 +1,6 @@
 pub use anchor_lang::{prelude::*, AccountDeserialize, InstructionData, ToAccountMetas};
 
-pub use mpl_auction_house::{
+pub use mtly_auction_house::{
     pda::{find_auctioneer_pda, find_bid_receipt_address, find_listing_receipt_address},
     receipt::{BidReceipt, ListingReceipt},
     AuctionHouse, Auctioneer, AuthorityScope,

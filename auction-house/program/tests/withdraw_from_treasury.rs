@@ -12,8 +12,8 @@
 //         solana_sdk::{signature::Keypair, signer::Signer, system_program},
 //         ClientError,
 //     };
-//     use mpl_auction_house::{
-//         accounts as mpl_auction_house_accounts, instruction as mpl_auction_house_instruction,
+//     use mtly_auction_house::{
+//         accounts as mtly_auction_house_accounts, instruction as mtly_auction_house_instruction,
 //         AuctionHouse,
 //     };
 
@@ -60,7 +60,7 @@
 //         program
 //             .request()
 //             .signer(&authority_keypair)
-//             .accounts(mpl_auction_house_accounts::WithdrawFromTreasury {
+//             .accounts(mtly_auction_house_accounts::WithdrawFromTreasury {
 //                 treasury_mint: t_mint_key,
 //                 authority: authority_keypair.pubkey(),
 //                 treasury_withdrawal_destination: auction_house_account
@@ -70,7 +70,7 @@
 //                 token_program: spl_token::id(),
 //                 system_program: system_program::id(),
 //             })
-//             .args(mpl_auction_house_instruction::WithdrawFromTreasury { amount })
+//             .args(mtly_auction_house_instruction::WithdrawFromTreasury { amount })
 //             .send()?;
 
 //         let treasury_balance_after_withdraw = program

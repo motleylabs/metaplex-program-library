@@ -12,8 +12,8 @@
 //         solana_sdk::{signature::Keypair, signer::Signer, system_program},
 //         ClientError,
 //     };
-//     use mpl_auction_house::{
-//         accounts as mpl_auction_house_accounts, instruction as mpl_auction_house_instruction,
+//     use mtly_auction_house::{
+//         accounts as mtly_auction_house_accounts, instruction as mtly_auction_house_instruction,
 //         AuctionHouse,
 //     };
 
@@ -60,14 +60,14 @@
 //         program
 //             .request()
 //             .signer(&authority_keypair)
-//             .accounts(mpl_auction_house_accounts::WithdrawFromFee {
+//             .accounts(mtly_auction_house_accounts::WithdrawFromFee {
 //                 authority: authority_keypair.pubkey(),
 //                 fee_withdrawal_destination: auction_house_account.fee_withdrawal_destination,
 //                 auction_house_fee_account: auction_house_account.auction_house_fee_account,
 //                 auction_house: auction_house_key,
 //                 system_program: system_program::id(),
 //             })
-//             .args(mpl_auction_house_instruction::WithdrawFromFee { amount })
+//             .args(mtly_auction_house_instruction::WithdrawFromFee { amount })
 //             .send()?;
 
 //         let fee_balance_after_withdraw = program

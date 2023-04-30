@@ -3,7 +3,7 @@ pub mod common;
 pub mod utils;
 
 use common::*;
-use mpl_auction_house::pda::find_auctioneer_pda;
+use mtly_auction_house::pda::find_auctioneer_pda;
 use mpl_testing_utils::{solana::airdrop, utils::Metadata};
 use solana_sdk::{signature::Keypair, signer::Signer};
 use std::assert_eq;

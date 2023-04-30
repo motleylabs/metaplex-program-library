@@ -8,8 +8,8 @@
 //         solana_sdk::{signature::Keypair, signer::Signer, system_program, sysvar},
 //         ClientError,
 //     };
-//     use mpl_auction_house::{
-//         accounts as mpl_auction_house_accounts, instruction as mpl_auction_house_instruction,
+//     use mtly_auction_house::{
+//         accounts as mtly_auction_house_accounts, instruction as mtly_auction_house_instruction,
 //         AuctionHouse,
 //     };
 
@@ -51,7 +51,7 @@
 //         program
 //             .request()
 //             .signer(&authority_keypair)
-//             .accounts(mpl_auction_house_accounts::UpdateAuctionHouse {
+//             .accounts(mtly_auction_house_accounts::UpdateAuctionHouse {
 //                 treasury_mint: t_mint_key,
 //                 payer: program.payer(),
 //                 authority,
@@ -65,7 +65,7 @@
 //                 ata_program: spl_associated_token_account::id(),
 //                 rent: sysvar::rent::id(),
 //             })
-//             .args(mpl_auction_house_instruction::UpdateAuctionHouse {
+//             .args(mtly_auction_house_instruction::UpdateAuctionHouse {
 //                 seller_fee_basis_points: Some(seller_fee_basis_points),
 //                 requires_sign_off: Some(false),
 //                 can_change_sale_price: Some(false),

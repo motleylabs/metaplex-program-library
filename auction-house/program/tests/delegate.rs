@@ -160,7 +160,7 @@ async fn incorrect_auctioneer_pda_fails() {
             ahkey.as_ref(),
             auctioneer_authority_pubkey.as_ref(),
         ],
-        &mpl_auction_house::id(),
+        &mtly_auction_house::id(),
     );
 
     let scopes = default_scopes();

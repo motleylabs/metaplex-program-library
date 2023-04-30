@@ -1,7 +1,7 @@
 use std::env;
 
 use anchor_lang::prelude::Pubkey;
-use mpl_auction_house::{
+use mtly_auction_house::{
     constants::{FEE_PAYER, MAX_NUM_SCOPES, PREFIX, TREASURY},
     AuthorityScope,
 };
@@ -72,7 +72,7 @@ pub fn find_noncanonical_auction_house_fee_account_address(
         auction_house_address.as_ref(),
         FEE_PAYER.as_bytes(),
     ];
-    find_noncanonical_program_address(auction_fee_account_seeds, &mpl_auction_house::id())
+    find_noncanonical_program_address(auction_fee_account_seeds, &mtly_auction_house::id())
 }
 
 pub fn find_noncanonical_auction_house_treasury_address(
@@ -83,7 +83,7 @@ pub fn find_noncanonical_auction_house_treasury_address(
         auction_house_address.as_ref(),
         TREASURY.as_bytes(),
     ];
-    find_noncanonical_program_address(auction_house_treasury_seeds, &mpl_auction_house::id())
+    find_noncanonical_program_address(auction_house_treasury_seeds, &mtly_auction_house::id())
 }
 
 /// In CI we're running into IoError(the request exceeded its deadline) which is most likely a
