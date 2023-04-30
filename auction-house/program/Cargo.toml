@@ -1,6 +1,6 @@
 [workspace]
 [package]
-name = "mpl-auction-house"
+name = "mtly-auction-house"
 version = "1.4.1"
 edition = "2021"
 description = "Decentralized Sales Protocol for Solana Tokens"

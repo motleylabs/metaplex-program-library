@@ -99,7 +99,7 @@ export class PurchaseReceipt implements PurchaseReceiptArgs {
    * @param programId - the program that owns the accounts we are filtering
    */
   static gpaBuilder(
-    programId: web3.PublicKey = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+    programId: web3.PublicKey = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
   ) {
     return beetSolana.GpaBuilder.fromStruct(programId, purchaseReceiptBeet);
   }

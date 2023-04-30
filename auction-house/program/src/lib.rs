@@ -37,7 +37,7 @@ use anchor_spl::{
 };
 use spl_token::instruction::revoke;
 
-anchor_lang::declare_id!("hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk");
+anchor_lang::declare_id!("nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr");
 
 #[program]
 pub mod auction_house {

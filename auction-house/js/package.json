@@ -1,5 +1,5 @@
 {
-  "name": "@metaplex-foundation/mpl-auction-house",
+  "name": "@motley-labs/mtly-auction-house",
   "version": "2.5.1",
   "contractVersion": "1.4.1",
   "description": "MPL Auction House JavaScript API.",
@@ -48,13 +48,13 @@
     "bn.js": "^5.2.0"
   },
   "devDependencies": {
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
     "@metaplex-foundation/solita": "^0.15.2",
     "@types/tape": "^4.13.2",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "eslint": "^8.3.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
     "spok": "^1.4.3",

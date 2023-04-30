@@ -94,7 +94,7 @@ export const auctioneerPublicBuyInstructionDiscriminator = [221, 239, 99, 240, 8
 export function createAuctioneerPublicBuyInstruction(
   accounts: AuctioneerPublicBuyInstructionAccounts,
   args: AuctioneerPublicBuyInstructionArgs,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = auctioneerPublicBuyStruct.serialize({
     instructionDiscriminator: auctioneerPublicBuyInstructionDiscriminator,

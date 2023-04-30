@@ -83,7 +83,7 @@ export const auctioneerWithdrawInstructionDiscriminator = [85, 166, 219, 110, 16
 export function createAuctioneerWithdrawInstruction(
   accounts: AuctioneerWithdrawInstructionAccounts,
   args: AuctioneerWithdrawInstructionArgs,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = auctioneerWithdrawStruct.serialize({
     instructionDiscriminator: auctioneerWithdrawInstructionDiscriminator,

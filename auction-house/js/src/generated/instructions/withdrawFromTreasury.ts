@@ -71,7 +71,7 @@ export const withdrawFromTreasuryInstructionDiscriminator = [0, 164, 86, 76, 56,
 export function createWithdrawFromTreasuryInstruction(
   accounts: WithdrawFromTreasuryInstructionAccounts,
   args: WithdrawFromTreasuryInstructionArgs,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = withdrawFromTreasuryStruct.serialize({
     instructionDiscriminator: withdrawFromTreasuryInstructionDiscriminator,

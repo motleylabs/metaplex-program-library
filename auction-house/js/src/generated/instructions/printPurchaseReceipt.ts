@@ -70,7 +70,7 @@ export const printPurchaseReceiptInstructionDiscriminator = [227, 154, 251, 7, 1
 export function createPrintPurchaseReceiptInstruction(
   accounts: PrintPurchaseReceiptInstructionAccounts,
   args: PrintPurchaseReceiptInstructionArgs,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = printPurchaseReceiptStruct.serialize({
     instructionDiscriminator: printPurchaseReceiptInstructionDiscriminator,

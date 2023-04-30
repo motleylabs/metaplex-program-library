@@ -80,7 +80,7 @@ export const auctioneerCancelInstructionDiscriminator = [197, 97, 152, 196, 115,
 export function createAuctioneerCancelInstruction(
   accounts: AuctioneerCancelInstructionAccounts,
   args: AuctioneerCancelInstructionArgs,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = auctioneerCancelStruct.serialize({
     instructionDiscriminator: auctioneerCancelInstructionDiscriminator,

@@ -65,7 +65,7 @@ export const cancelRemainingAccountsInstructionDiscriminator = [
  */
 export function createCancelRemainingAccountsInstruction(
   accounts: CancelRemainingAccountsInstructionAccounts,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = cancelRemainingAccountsStruct.serialize({
     instructionDiscriminator: cancelRemainingAccountsInstructionDiscriminator,

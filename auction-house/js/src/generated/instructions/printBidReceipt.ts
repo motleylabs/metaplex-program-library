@@ -66,7 +66,7 @@ export const printBidReceiptInstructionDiscriminator = [94, 249, 90, 230, 239, 6
 export function createPrintBidReceiptInstruction(
   accounts: PrintBidReceiptInstructionAccounts,
   args: PrintBidReceiptInstructionArgs,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = printBidReceiptStruct.serialize({
     instructionDiscriminator: printBidReceiptInstructionDiscriminator,

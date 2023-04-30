@@ -105,7 +105,7 @@ export const executeSaleInstructionDiscriminator = [37, 74, 217, 157, 79, 49, 35
 export function createExecuteSaleInstruction(
   accounts: ExecuteSaleInstructionAccounts,
   args: ExecuteSaleInstructionArgs,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = executeSaleStruct.serialize({
     instructionDiscriminator: executeSaleInstructionDiscriminator,

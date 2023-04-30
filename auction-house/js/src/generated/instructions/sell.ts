@@ -88,7 +88,7 @@ export const sellInstructionDiscriminator = [51, 230, 133, 164, 1, 127, 131, 173
 export function createSellInstruction(
   accounts: SellInstructionAccounts,
   args: SellInstructionArgs,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = sellStruct.serialize({
     instructionDiscriminator: sellInstructionDiscriminator,

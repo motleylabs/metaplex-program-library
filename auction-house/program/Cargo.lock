@@ -2021,30 +2021,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "mpl-auction-house"
-version = "1.4.1"
-dependencies = [
- "anchor-client",
- "anchor-lang",
- "anchor-spl",
- "arrayref",
- "env_logger",
- "mpl-testing-utils",
- "mpl-token-auth-rules",
- "mpl-token-metadata",
- "rmp-serde",
- "serde",
- "serde_json",
- "shellexpand",
- "solana-program",
- "solana-program-test",
- "solana-sdk",
- "spl-associated-token-account",
- "spl-token",
- "thiserror",
-]
-
-[[package]]
 name = "mpl-testing-utils"
 version = "0.1.1"
 dependencies = [
@@ -2138,6 +2114,30 @@ dependencies = [
  "borsh",
  "solana-program",
  "spl-token",
+]
+
+[[package]]
+name = "mtly-auction-house"
+version = "1.4.1"
+dependencies = [
+ "anchor-client",
+ "anchor-lang",
+ "anchor-spl",
+ "arrayref",
+ "env_logger",
+ "mpl-testing-utils",
+ "mpl-token-auth-rules",
+ "mpl-token-metadata",
+ "rmp-serde",
+ "serde",
+ "serde_json",
+ "shellexpand",
+ "solana-program",
+ "solana-program-test",
+ "solana-sdk",
+ "spl-associated-token-account",
+ "spl-token",
+ "thiserror",
 ]
 
 [[package]]

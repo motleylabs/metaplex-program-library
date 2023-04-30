@@ -90,7 +90,7 @@ export const buyInstructionDiscriminator = [102, 6, 61, 18, 1, 218, 235, 234];
 export function createBuyInstruction(
   accounts: BuyInstructionAccounts,
   args: BuyInstructionArgs,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = buyStruct.serialize({
     instructionDiscriminator: buyInstructionDiscriminator,

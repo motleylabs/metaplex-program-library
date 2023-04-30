@@ -109,7 +109,7 @@ export const executePartialSaleInstructionDiscriminator = [163, 18, 35, 157, 49,
 export function createExecutePartialSaleInstruction(
   accounts: ExecutePartialSaleInstructionAccounts,
   args: ExecutePartialSaleInstructionArgs,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = executePartialSaleStruct.serialize({
     instructionDiscriminator: executePartialSaleInstructionDiscriminator,

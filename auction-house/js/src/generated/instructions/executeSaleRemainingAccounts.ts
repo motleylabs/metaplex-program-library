@@ -58,7 +58,7 @@ export const executeSaleRemainingAccountsInstructionDiscriminator = [
  */
 export function createExecuteSaleRemainingAccountsInstruction(
   accounts: ExecuteSaleRemainingAccountsInstructionAccounts,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = executeSaleRemainingAccountsStruct.serialize({
     instructionDiscriminator: executeSaleRemainingAccountsInstructionDiscriminator,

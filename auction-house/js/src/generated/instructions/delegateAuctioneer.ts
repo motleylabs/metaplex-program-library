@@ -68,7 +68,7 @@ export const delegateAuctioneerInstructionDiscriminator = [106, 178, 12, 122, 74
 export function createDelegateAuctioneerInstruction(
   accounts: DelegateAuctioneerInstructionAccounts,
   args: DelegateAuctioneerInstructionArgs,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = delegateAuctioneerStruct.serialize({
     instructionDiscriminator: delegateAuctioneerInstructionDiscriminator,

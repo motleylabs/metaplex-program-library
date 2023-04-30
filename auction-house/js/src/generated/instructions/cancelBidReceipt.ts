@@ -47,7 +47,7 @@ export const cancelBidReceiptInstructionDiscriminator = [246, 108, 27, 229, 220,
  */
 export function createCancelBidReceiptInstruction(
   accounts: CancelBidReceiptInstructionAccounts,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = cancelBidReceiptStruct.serialize({
     instructionDiscriminator: cancelBidReceiptInstructionDiscriminator,

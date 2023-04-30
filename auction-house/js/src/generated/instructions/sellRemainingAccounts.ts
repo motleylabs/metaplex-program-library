@@ -58,7 +58,7 @@ export const sellRemainingAccountsInstructionDiscriminator = [113, 23, 199, 41, 
  */
 export function createSellRemainingAccountsInstruction(
   accounts: SellRemainingAccountsInstructionAccounts,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = sellRemainingAccountsStruct.serialize({
     instructionDiscriminator: sellRemainingAccountsInstructionDiscriminator,

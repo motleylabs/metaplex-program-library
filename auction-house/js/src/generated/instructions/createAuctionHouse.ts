@@ -91,7 +91,7 @@ export const createAuctionHouseInstructionDiscriminator = [221, 66, 242, 159, 24
 export function createCreateAuctionHouseInstruction(
   accounts: CreateAuctionHouseInstructionAccounts,
   args: CreateAuctionHouseInstructionArgs,
-  programId = new web3.PublicKey('hausS13jsjafwWwGqZTUQRmWyvyxn9EQpqMwV1PBBmk'),
+  programId = new web3.PublicKey('nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr'),
 ) {
   const [data] = createAuctionHouseStruct.serialize({
     instructionDiscriminator: createAuctionHouseInstructionDiscriminator,
