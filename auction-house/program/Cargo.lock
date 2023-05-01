@@ -2118,7 +2118,7 @@ dependencies = [
 
 [[package]]
 name = "mtly-auction-house"
-version = "1.4.1"
+version = "1.4.3"
 dependencies = [
  "anchor-client",
  "anchor-lang",
