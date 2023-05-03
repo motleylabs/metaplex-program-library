@@ -1,3 +1,22 @@
+## Motley Labs Auction House (`nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr`)
+
+A fork of Metaplex [Auction House](https://github.com/metaplex-foundation/metaplex-program-library/tree/master/auction-house) to allow Motley Labs to iterate quickly on new functionality.
+
+This fork is deployed at `nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr` and can be used by the public.
+
+A crate is available at crates.io: [![Crate][mtly-auction-house-img-long]][mtly-auction-house-crate]
+
+A TypeScript API is available on NPM: [![NPM][mtly-auction-house-nimg-long]][mtly-auction-house-npm]
+
+## Verification of on-chain binary
+
+Steps to verify the on-chain binary:
+
+```
+cd auction-house/program
+anchor verify nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr
+```
+
 # Metaplex Program Library
 
 Metaplex smart contracts and SDK.
@@ -123,6 +142,7 @@ under either the [MIT][mit-license] or the [Apache][apache-license] licenses.
 
 <!-- Crates -->
 
+[mtly-auction-house-crate]:https://crates.io/crates/mtly-auction-house
 [mpl-auction-house-crate]:https://crates.io/crates/mpl-auction-house
 [mpl-auctioneer-crate]:https://crates.io/crates/mpl-auctioneer
 [mpl-bubblegum-crate]:https://crates.io/crates/mpl-bubblegum
@@ -137,6 +157,8 @@ under either the [MIT][mit-license] or the [Apache][apache-license] licenses.
 [mpl-token-entangler-crate]:https://crates.io/crates/mpl-token-entangler
 [mpl-token-metadata-crate]:https://crates.io/crates/mpl-token-metadata
 
+[mtly-auction-house-img-long]:https://img.shields.io/crates/v/mtly-auction-house?label=crates.io%20%7C%20mtly-auction-house&logo=rust
+[mtly-auction-house-img]:https://img.shields.io/crates/v/mtly-auction-house?logo=rust
 [mpl-auction-house-img-long]:https://img.shields.io/crates/v/mpl-auction-house?label=crates.io%20%7C%20mpl-auction-house&logo=rust
 [mpl-auction-house-img]:https://img.shields.io/crates/v/mpl-auction-house?logo=rust
 
@@ -178,6 +200,7 @@ under either the [MIT][mit-license] or the [Apache][apache-license] licenses.
 
 <!-- NPM Packages -->
 
+[mtly-auction-house-npm]:https://www.npmjs.com/package/@motleylabs/mtly-auction-house
 [mpl-auction-house-npm]:https://www.npmjs.com/package/@metaplex-foundation/mpl-auction-house
 [mpl-auctioneer-npm]:https://www.npmjs.com/package/@metaplex-foundation/mpl-auctioneer
 [mpl-bubblegum-npm]:https://www.npmjs.com/package/@metaplex-foundation/mpl-bubblegum
@@ -191,6 +214,8 @@ under either the [MIT][mit-license] or the [Apache][apache-license] licenses.
 [mpl-token-entangler-npm]:https://www.npmjs.com/package/@metaplex-foundation/mpl-token-entangler
 [mpl-token-metadata-npm]:https://www.npmjs.com/package/@metaplex-foundation/mpl-token-metadata
 
+[mtly-auction-house-nimg-long]:https://img.shields.io/npm/v/@motleylabs/mtly-auction-house?label=npm%20%7C%20mtly-auction-house&logo=typescript
+[mtly-auction-house-nimg]:https://img.shields.io/npm/v/@motleylabs/mtly-auction-house?logo=typescript
 [mpl-auction-house-nimg-long]:https://img.shields.io/npm/v/@metaplex-foundation/mpl-auction-house?label=npm%20%7C%20mpl-auction-house&logo=typescript
 [mpl-auction-house-nimg]:https://img.shields.io/npm/v/@metaplex-foundation/mpl-auction-house?logo=typescript
 
