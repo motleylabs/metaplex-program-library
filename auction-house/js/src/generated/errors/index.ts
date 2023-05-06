@@ -963,6 +963,58 @@ createErrorFromNameLookup.set(
 );
 
 /**
+ * BuyerPriceWithFeesCannotBeLowerThanBuyerPrice: 'The buyer price with fees cannot be lower than the buyer price.'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class BuyerPriceWithFeesCannotBeLowerThanBuyerPriceError extends Error {
+  readonly code: number = 0x179d;
+  readonly name: string = 'BuyerPriceWithFeesCannotBeLowerThanBuyerPrice';
+  constructor() {
+    super('The buyer price with fees cannot be lower than the buyer price.');
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, BuyerPriceWithFeesCannotBeLowerThanBuyerPriceError);
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x179d,
+  () => new BuyerPriceWithFeesCannotBeLowerThanBuyerPriceError(),
+);
+createErrorFromNameLookup.set(
+  'BuyerPriceWithFeesCannotBeLowerThanBuyerPrice',
+  () => new BuyerPriceWithFeesCannotBeLowerThanBuyerPriceError(),
+);
+
+/**
+ * BuyerPriceWithFeesMustMatchBuyerPricePlusFees: 'The buyer price with fees must match the buyer price plus all fees.'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class BuyerPriceWithFeesMustMatchBuyerPricePlusFeesError extends Error {
+  readonly code: number = 0x179e;
+  readonly name: string = 'BuyerPriceWithFeesMustMatchBuyerPricePlusFees';
+  constructor() {
+    super('The buyer price with fees must match the buyer price plus all fees.');
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, BuyerPriceWithFeesMustMatchBuyerPricePlusFeesError);
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x179e,
+  () => new BuyerPriceWithFeesMustMatchBuyerPricePlusFeesError(),
+);
+createErrorFromNameLookup.set(
+  'BuyerPriceWithFeesMustMatchBuyerPricePlusFees',
+  () => new BuyerPriceWithFeesMustMatchBuyerPricePlusFeesError(),
+);
+
+/**
  * Attempts to resolve a custom program error from the provided error code.
  * @category Errors
  * @category generated

@@ -13,12 +13,12 @@ use utils::{
 };
 
 use anchor_lang::{AccountDeserialize, InstructionData, ToAccountMetas};
-use mtly_auction_house::pda::find_auctioneer_pda;
 use mpl_testing_utils::{
     solana::{airdrop, create_associated_token_account, transfer},
     utils::Metadata,
 };
 use mpl_token_metadata::state::Creator;
+use mtly_auction_house::pda::find_auctioneer_pda;
 use solana_sdk::{
     account::Account as SolanaAccount, commitment_config::CommitmentLevel, signer::Signer,
 };
@@ -286,6 +286,7 @@ async fn auctioneer_execute_sale_pnft_success() {
         &buyer,
         &auctioneer_authority,
         100_000_000,
+        None,
     );
     context
         .banks_client
@@ -365,6 +366,7 @@ async fn auctioneer_execute_sale_pnft_success() {
             program_as_signer_bump: pas_bump,
             token_size: 1,
             buyer_price: 100_000_000,
+            buyer_price_with_fees: None,
         }
         .data(),
         accounts,
@@ -412,6 +414,361 @@ async fn auctioneer_execute_sale_pnft_success() {
     .unwrap();
     let fee_minus: u64 = 100_000_000 - ((ah.seller_fee_basis_points as u64 * 100_000_000) / 10000);
     assert_eq!(seller_before.lamports + fee_minus, seller_after.lamports);
+    assert!(seller_before.lamports < seller_after.lamports);
+    assert_eq!(buyer_token_after.amount, 1);
+}
+
+#[tokio::test]
+async fn auctioneer_execute_sale_pnft_price_with_fees_no_creators_success() {
+    let sfbp = 500;
+
+    auctioneer_execute_sale_pnft_price_with_fees_with_creators_and_sfbp(None, sfbp).await;
+}
+
+#[tokio::test]
+async fn auctioneer_execute_sale_pnft_price_with_fees_zero_sfbp_success() {
+    let sfbp = 0;
+    let metadata_creators = vec![
+        (Pubkey::new_unique(), 25, false),
+        (Pubkey::new_unique(), 75, true),
+    ];
+
+    auctioneer_execute_sale_pnft_price_with_fees_with_creators_and_sfbp(
+        Some(metadata_creators),
+        sfbp,
+    )
+    .await;
+}
+
+#[tokio::test]
+async fn auctioneer_execute_sale_pnft_price_with_fees_success() {
+    let sfbp = 500;
+    let metadata_creators = vec![
+        (Pubkey::new_unique(), 25, false),
+        (Pubkey::new_unique(), 75, true),
+    ];
+
+    auctioneer_execute_sale_pnft_price_with_fees_with_creators_and_sfbp(
+        Some(metadata_creators),
+        sfbp,
+    )
+    .await;
+}
+
+async fn auctioneer_execute_sale_pnft_price_with_fees_with_creators_and_sfbp(
+    metadata_creators: Option<Vec<(Pubkey, u8, bool)>>,
+    sfbp: u16,
+) {
+    let mut context = auction_house_program_test().start_with_context().await;
+    // Payer Wallet
+    let (ah, ahkey, ah_auth) = existing_auction_house_test_context(&mut context)
+        .await
+        .unwrap();
+
+    let payer = context.payer.dirty_clone();
+
+    let (rule_set, auth_data) = create_sale_delegate_rule_set(&mut context, payer).await;
+
+    let test_metadata = Metadata::new();
+    airdrop(&mut context, &test_metadata.token.pubkey(), 10 * ONE_SOL)
+        .await
+        .unwrap();
+
+    if let Some(ref mdc) = metadata_creators {
+        for (pubkey, _, fund_creator) in mdc {
+            if *fund_creator {
+                airdrop(&mut context, pubkey, ONE_SOL).await.unwrap();
+            }
+        }
+    }
+
+    test_metadata
+        .create_via_builder(
+            &mut context,
+            "Test".to_string(),
+            "TST".to_string(),
+            "uri".to_string(),
+            metadata_creators.as_ref().map(|mdc| {
+                mdc.clone()
+                    .iter()
+                    .map(|(address, share, _)| Creator {
+                        address: *address,
+                        verified: false,
+                        share: *share,
+                    })
+                    .collect()
+            }),
+            sfbp,
+            false,
+            None,
+            None,
+            true,
+            TokenStandard::ProgrammableNonFungible,
+            None,
+            Some(rule_set),
+            Some(0),
+            Some(PrintSupply::Zero),
+        )
+        .await
+        .unwrap();
+
+    test_metadata
+        .mint_via_builder(&mut context, 1, Some(auth_data))
+        .await
+        .unwrap();
+
+    let metadata = test_metadata.get_data(&mut context).await;
+    let price = ONE_SOL;
+    let price_with_fees = price
+        + ((ah.seller_fee_basis_points as u64 * price) / 10000)
+        + ((metadata.data.seller_fee_basis_points as u64 * price) / 10000);
+
+    // Delegate external auctioneer authority.
+    let auctioneer_authority = Keypair::new();
+    airdrop(&mut context, &auctioneer_authority.pubkey(), ONE_SOL)
+        .await
+        .unwrap();
+
+    let (auctioneer_pda, _) = find_auctioneer_pda(&ahkey, &auctioneer_authority.pubkey());
+
+    delegate_auctioneer(
+        &mut context,
+        ahkey,
+        &ah_auth,
+        auctioneer_authority.pubkey(),
+        auctioneer_pda,
+        default_scopes(),
+    )
+    .await
+    .unwrap();
+
+    let (sell_acc, sell_tx) = auctioneer_sell_pnft(
+        &mut context,
+        &ahkey,
+        &ah,
+        &test_metadata,
+        &auctioneer_authority,
+        &rule_set,
+    );
+    context
+        .banks_client
+        .process_transaction(sell_tx)
+        .await
+        .unwrap();
+
+    let buyer = Keypair::new();
+    airdrop(&mut context, &buyer.pubkey(), 10 * ONE_SOL)
+        .await
+        .unwrap();
+
+    airdrop(&mut context, &ah.auction_house_treasury, 10 * ONE_SOL)
+        .await
+        .unwrap();
+
+    let treasury_before = context
+        .banks_client
+        .get_account(ah.auction_house_treasury)
+        .await
+        .unwrap()
+        .unwrap();
+
+    let (bid_acc, buy_tx) = auctioneer_buy(
+        &mut context,
+        &ahkey,
+        &ah,
+        &test_metadata,
+        &test_metadata.token.pubkey(),
+        &buyer,
+        &auctioneer_authority,
+        price,
+        Some(price_with_fees),
+    );
+    context
+        .banks_client
+        .process_transaction(buy_tx)
+        .await
+        .unwrap();
+    let buyer_token_account =
+        get_associated_token_address(&buyer.pubkey(), &test_metadata.mint.pubkey());
+
+    let mut accounts = mtly_auction_house::accounts::AuctioneerExecuteSale {
+        buyer: buyer.pubkey(),
+        seller: test_metadata.token.pubkey(),
+        auction_house: ahkey,
+        metadata: test_metadata.pubkey,
+        token_account: sell_acc.token_account,
+        authority: ah.authority,
+        auctioneer_authority: auctioneer_authority.pubkey(),
+        seller_trade_state: sell_acc.seller_trade_state,
+        buyer_trade_state: bid_acc.buyer_trade_state,
+        token_program: spl_token::id(),
+        free_trade_state: sell_acc.free_seller_trade_state,
+        seller_payment_receipt_account: test_metadata.token.pubkey(),
+        buyer_receipt_token_account: buyer_token_account,
+        escrow_payment_account: bid_acc.escrow_payment_account,
+        token_mint: test_metadata.mint.pubkey(),
+        auction_house_fee_account: ah.auction_house_fee_account,
+        auction_house_treasury: ah.auction_house_treasury,
+        ah_auctioneer_pda: auctioneer_pda,
+        treasury_mint: ah.treasury_mint,
+        program_as_signer: sell_acc.program_as_signer,
+        system_program: system_program::id(),
+        ata_program: spl_associated_token_account::id(),
+        rent: sysvar::rent::id(),
+    }
+    .to_account_metas(None);
+
+    if let Some(ref mdc) = metadata_creators {
+        for (pubkey, _, _) in mdc {
+            accounts.push(AccountMeta {
+                pubkey: *pubkey,
+                is_signer: false,
+                is_writable: true,
+            });
+        }
+    }
+
+    let (destination_tr, _) =
+        find_token_record_account(&test_metadata.mint.pubkey(), &buyer_token_account);
+
+    let remaining_accounts = mtly_auction_house::accounts::ExecuteSaleRemainingAccounts {
+        metadata_program: mpl_token_metadata::id(),
+        edition: test_metadata.master_edition,
+        owner_tr: test_metadata.token_record,
+        destination_tr,
+        auth_rules_program: mpl_token_auth_rules::id(),
+        auth_rules: rule_set,
+        sysvar_instructions: sysvar::instructions::id(),
+    };
+
+    accounts.append(&mut remaining_accounts.to_account_metas(None));
+
+    //@TODO: remove later
+    if let Some(md_ix) = accounts
+        .iter()
+        .position(|x| x.pubkey == test_metadata.pubkey)
+    {
+        accounts[md_ix].is_writable = true;
+    }
+
+    let (_, free_sts_bump) = find_trade_state_address(
+        &test_metadata.token.pubkey(),
+        &ahkey,
+        &sell_acc.token_account,
+        &ah.treasury_mint,
+        &test_metadata.mint.pubkey(),
+        0,
+        1,
+    );
+    let (_, escrow_bump) = find_escrow_payment_address(&ahkey, &buyer.pubkey());
+    let (_, pas_bump) = find_program_as_signer_address();
+
+    let instruction = Instruction {
+        program_id: mtly_auction_house::id(),
+        data: mtly_auction_house::instruction::AuctioneerExecuteSale {
+            escrow_payment_bump: escrow_bump,
+            _free_trade_state_bump: free_sts_bump,
+            program_as_signer_bump: pas_bump,
+            token_size: 1,
+            buyer_price: price,
+            buyer_price_with_fees: Some(price_with_fees),
+        }
+        .data(),
+        accounts,
+    };
+
+    airdrop(&mut context, &ah.auction_house_fee_account, 10 * ONE_SOL)
+        .await
+        .unwrap();
+
+    let tx = Transaction::new_signed_with_payer(
+        &[instruction],
+        Some(&ah_auth.pubkey()),
+        &[&ah_auth, &auctioneer_authority],
+        context.last_blockhash,
+    );
+    let seller_before = context
+        .banks_client
+        .get_account(test_metadata.token.pubkey())
+        .await
+        .unwrap()
+        .unwrap();
+    let buyer_token_before = &context
+        .banks_client
+        .get_account(buyer_token_account)
+        .await
+        .unwrap();
+    assert!(buyer_token_before.is_none());
+
+    let mut metadata_creators_before: Vec<Option<SolanaAccount>> = Vec::new();
+    if let Some(ref mdc) = metadata_creators {
+        for (creator, _, _) in mdc {
+            metadata_creators_before
+                .push(context.banks_client.get_account(*creator).await.unwrap());
+        }
+    }
+
+    context.banks_client.process_transaction(tx).await.unwrap();
+
+    let treasury_after = context
+        .banks_client
+        .get_account(ah.auction_house_treasury)
+        .await
+        .unwrap()
+        .unwrap();
+
+    let seller_after = context
+        .banks_client
+        .get_account(test_metadata.token.pubkey())
+        .await
+        .unwrap()
+        .unwrap();
+
+    let buyer_token_after = Account::unpack_from_slice(
+        context
+            .banks_client
+            .get_account(buyer_token_account)
+            .await
+            .unwrap()
+            .unwrap()
+            .data
+            .as_slice(),
+    )
+    .unwrap();
+
+    let mut metadata_creators_after: Vec<Option<SolanaAccount>> = Vec::new();
+    if let Some(ref mdc) = metadata_creators {
+        for (creator, _, _) in mdc {
+            metadata_creators_after.push(context.banks_client.get_account(*creator).await.unwrap());
+        }
+    }
+
+    for (creator_before, creator_after) in metadata_creators_before
+        .iter()
+        .zip(metadata_creators_after.iter())
+    {
+        let before_lamps = match creator_before {
+            Some(c) => c.lamports,
+            None => 0,
+        };
+
+        let after_lamps = match creator_after {
+            Some(c) => c.lamports,
+            None => 0,
+        };
+
+        if sfbp == 0 {
+            assert_eq!(before_lamps, after_lamps);
+        } else {
+            assert!(before_lamps < after_lamps);
+        }
+    }
+
+    assert_eq!(
+        treasury_before.lamports + ((ah.seller_fee_basis_points as u64 * price) / 10000),
+        treasury_after.lamports
+    );
+    assert_eq!(seller_before.lamports + price, seller_after.lamports);
     assert!(seller_before.lamports < seller_after.lamports);
     assert_eq!(buyer_token_after.amount, 1);
 }
@@ -1135,6 +1492,7 @@ async fn auctioneer_execute_sale_success() {
         &buyer,
         &auctioneer_authority,
         100_000_000,
+        None,
     );
     context
         .banks_client
@@ -1190,6 +1548,7 @@ async fn auctioneer_execute_sale_success() {
             program_as_signer_bump: pas_bump,
             token_size: 1,
             buyer_price: 100_000_000,
+            buyer_price_with_fees: None,
         }
         .data(),
         accounts,
@@ -1312,6 +1671,7 @@ async fn auctioneer_execute_sale_bad_trade_state_failure() {
         &buyer0,
         &auctioneer_authority,
         100_000_000,
+        None,
     );
     context
         .banks_client
@@ -1335,6 +1695,7 @@ async fn auctioneer_execute_sale_bad_trade_state_failure() {
         &buyer1,
         &auctioneer_authority,
         100_000_000,
+        None,
     );
     context
         .banks_client
@@ -1388,6 +1749,7 @@ async fn auctioneer_execute_sale_bad_trade_state_failure() {
             program_as_signer_bump: pas_bump,
             token_size: 1,
             buyer_price: 100_000_000,
+            buyer_price_with_fees: None,
         }
         .data(),
         accounts,
@@ -1479,6 +1841,7 @@ async fn auctioneer_execute_sale_missing_scope_fails() {
         &buyer,
         &auctioneer_authority,
         100_000_000,
+        None,
     );
     context
         .banks_client
@@ -1535,6 +1898,7 @@ async fn auctioneer_execute_sale_missing_scope_fails() {
             program_as_signer_bump: pas_bump,
             token_size: 1,
             buyer_price: 100_000_000,
+            buyer_price_with_fees: None,
         }
         .data(),
         accounts,
@@ -1662,6 +2026,7 @@ pub async fn auctioneer_execute_sale_no_delegate_fails() {
             program_as_signer_bump: pas_bump,
             token_size: 1,
             buyer_price: 100_000_000,
+            buyer_price_with_fees: None,
         }
         .data(),
         accounts,
@@ -2021,6 +2386,7 @@ async fn auctioneer_execute_public_sale_success() {
         &public_bidder,
         &auctioneer_authority,
         price,
+        None,
     );
     context
         .banks_client
@@ -2041,6 +2407,7 @@ async fn auctioneer_execute_public_sale_success() {
         &buyer,
         &auctioneer_authority,
         price,
+        None,
     );
     context
         .banks_client
@@ -2063,6 +2430,7 @@ async fn auctioneer_execute_public_sale_success() {
         &bid_acc.buyer_trade_state,
         1,
         price,
+        None,
     );
     airdrop(&mut context, &ah.auction_house_fee_account, ONE_SOL * 10)
         .await
@@ -2151,6 +2519,7 @@ async fn auctioneer_execute_public_sale_success() {
         &public_bid_acc.buyer_trade_state,
         1,
         price.to_owned(),
+        None,
     );
 
     context
@@ -2255,6 +2624,7 @@ async fn auctioneer_execute_public_sale_missing_scope_fails() {
         &public_bidder,
         &auctioneer_authority,
         price,
+        None,
     );
     context
         .banks_client
@@ -2275,6 +2645,7 @@ async fn auctioneer_execute_public_sale_missing_scope_fails() {
         &buyer,
         &auctioneer_authority,
         price,
+        None,
     );
     context
         .banks_client
@@ -2297,6 +2668,7 @@ async fn auctioneer_execute_public_sale_missing_scope_fails() {
         &bid_acc.buyer_trade_state,
         1,
         price,
+        None,
     );
     airdrop(&mut context, &ah.auction_house_fee_account, 10_000_000_000)
         .await
@@ -2410,6 +2782,7 @@ async fn auctioneer_execute_public_sale_no_delegate_fails() {
         &bid_acc.buyer_trade_state,
         1,
         price,
+        None,
     );
 
     let error = context

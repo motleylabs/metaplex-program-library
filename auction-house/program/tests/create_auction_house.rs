@@ -3,11 +3,11 @@ pub mod common;
 pub mod utils;
 use anchor_lang::AccountDeserialize;
 
-use mtly_auction_house::{pda::*, AuctionHouse};
 use mpl_testing_utils::{
     assert_error,
     solana::{airdrop, create_associated_token_account, create_mint},
 };
+use mtly_auction_house::{pda::*, AuctionHouse};
 use solana_program_test::*;
 use solana_sdk::{
     instruction::InstructionError, signature::Keypair, signer::Signer,

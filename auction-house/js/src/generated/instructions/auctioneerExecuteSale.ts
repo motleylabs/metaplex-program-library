@@ -20,13 +20,14 @@ export type AuctioneerExecuteSaleInstructionArgs = {
   programAsSignerBump: number;
   buyerPrice: beet.bignum;
   tokenSize: beet.bignum;
+  buyerPriceWithFees: beet.COption<beet.bignum>;
 };
 /**
  * @category Instructions
  * @category AuctioneerExecuteSale
  * @category generated
  */
-export const auctioneerExecuteSaleStruct = new beet.BeetArgsStruct<
+export const auctioneerExecuteSaleStruct = new beet.FixableBeetArgsStruct<
   AuctioneerExecuteSaleInstructionArgs & {
     instructionDiscriminator: number[] /* size: 8 */;
   }
@@ -38,6 +39,7 @@ export const auctioneerExecuteSaleStruct = new beet.BeetArgsStruct<
     ['programAsSignerBump', beet.u8],
     ['buyerPrice', beet.u64],
     ['tokenSize', beet.u64],
+    ['buyerPriceWithFees', beet.coption(beet.u64)],
   ],
   'AuctioneerExecuteSaleInstructionArgs',
 );
@@ -48,7 +50,7 @@ export const auctioneerExecuteSaleStruct = new beet.BeetArgsStruct<
  * @property [_writable_] seller
  * @property [_writable_] tokenAccount
  * @property [] tokenMint
- * @property [] metadata
+ * @property [_writable_] metadata
  * @property [] treasuryMint
  * @property [_writable_] escrowPaymentAccount
  * @property [_writable_] sellerPaymentReceiptAccount
@@ -138,7 +140,7 @@ export function createAuctioneerExecuteSaleInstruction(
     },
     {
       pubkey: accounts.metadata,
-      isWritable: false,
+      isWritable: true,
       isSigner: false,
     },
     {

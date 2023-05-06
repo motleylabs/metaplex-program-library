@@ -36,6 +36,7 @@ pub struct PublicBuy<'info> {
     token_account: Box<Account<'info, TokenAccount>>,
 
     /// CHECK: Validated in public_bid_logic.
+    #[account(mut)]
     metadata: UncheckedAccount<'info>,
 
     /// CHECK: Not dangerous. Account seeds checked in constraint.
@@ -144,7 +145,8 @@ pub fn public_bid(
     trade_state_bump: u8,
     escrow_payment_bump: u8,
     buyer_price: u64,
-    token_size: u64
+    token_size: u64,
+    buyer_price_with_fees: Option<u64>,
 )]
 pub struct AuctioneerPublicBuy<'info> {
     wallet: Signer<'info>,
@@ -161,6 +163,7 @@ pub struct AuctioneerPublicBuy<'info> {
     token_account: Box<Account<'info, TokenAccount>>,
 
     /// CHECK: Validated in public_bid_logic.
+    #[account(mut)]
     metadata: UncheckedAccount<'info>,
 
     /// CHECK: Not dangerous. Account seeds checked in constraint.
@@ -248,6 +251,7 @@ pub fn auctioneer_public_bid(
     escrow_payment_bump: u8,
     buyer_price: u64,
     token_size: u64,
+    buyer_price_with_fees: Option<u64>,
 ) -> Result<()> {
     auctioneer_bid_logic(
         ctx.accounts.wallet.to_owned(),
@@ -277,6 +281,7 @@ pub fn auctioneer_public_bid(
         *ctx.bumps
             .get("buyer_trade_state")
             .ok_or(AuctionHouseError::BumpSeedNotInHashMap)?,
+        buyer_price_with_fees,
     )
 }
 
@@ -309,6 +314,7 @@ pub struct Buy<'info> {
 
     /// CHECK: Validated in bid_logic.
     /// SPL token account metadata.
+    #[account(mut)]
     metadata: UncheckedAccount<'info>,
 
     /// CHECK: Not dangerous. Account seeds checked in constraint.
@@ -421,7 +427,8 @@ pub fn private_bid<'info>(
     trade_state_bump: u8,
     escrow_payment_bump: u8,
     buyer_price: u64,
-    token_size: u64
+    token_size: u64,
+    buyer_price_with_fees: Option<u64>
 )]
 pub struct AuctioneerBuy<'info> {
     /// User wallet account.
@@ -444,6 +451,7 @@ pub struct AuctioneerBuy<'info> {
 
     /// CHECK: Validated in bid_logic.
     /// SPL token account metadata.
+    #[account(mut)]
     metadata: UncheckedAccount<'info>,
 
     /// CHECK: Not dangerous. Account seeds checked in constraint.
@@ -532,6 +540,7 @@ pub fn auctioneer_private_bid<'info>(
     escrow_payment_bump: u8,
     buyer_price: u64,
     token_size: u64,
+    buyer_price_with_fees: Option<u64>,
 ) -> Result<()> {
     auctioneer_bid_logic(
         ctx.accounts.wallet.to_owned(),
@@ -561,6 +570,7 @@ pub fn auctioneer_private_bid<'info>(
         *ctx.bumps
             .get("buyer_trade_state")
             .ok_or(AuctionHouseError::BumpSeedNotInHashMap)?,
+        buyer_price_with_fees,
     )
 }
 
@@ -790,6 +800,7 @@ pub fn auctioneer_bid_logic<'info>(
     public: bool,
     escrow_canonical_bump: u8,
     trade_state_canonical_bump: u8,
+    buyer_price_with_fees: Option<u64>,
 ) -> Result<()> {
     if !auction_house.has_auctioneer {
         return Err(AuctionHouseError::NoAuctioneerProgramSet.into());
@@ -859,11 +870,11 @@ pub fn auctioneer_bid_logic<'info>(
         assert_keys_equal(wallet.key(), payment_account.key())?;
 
         if escrow_payment_account.lamports()
-            < buyer_price
+            < buyer_price_with_fees.unwrap_or(buyer_price)
                 .checked_add(rent.minimum_balance(escrow_payment_account.data_len()))
                 .ok_or(AuctionHouseError::NumericalOverflow)?
         {
-            let diff = buyer_price
+            let diff = buyer_price_with_fees.unwrap_or(buyer_price)
                 .checked_add(rent.minimum_balance(escrow_payment_account.data_len()))
                 .ok_or(AuctionHouseError::NumericalOverflow)?
                 .checked_sub(escrow_payment_account.lamports())
@@ -886,8 +897,8 @@ pub fn auctioneer_bid_logic<'info>(
         let escrow_payment_loaded: spl_token::state::Account =
             assert_initialized(&escrow_payment_account)?;
 
-        if escrow_payment_loaded.amount < buyer_price {
-            let diff = buyer_price
+        if escrow_payment_loaded.amount < buyer_price_with_fees.unwrap_or(buyer_price) {
+            let diff = buyer_price_with_fees.unwrap_or(buyer_price)
                 .checked_sub(escrow_payment_loaded.amount)
                 .ok_or(AuctionHouseError::NumericalOverflow)?;
             invoke(

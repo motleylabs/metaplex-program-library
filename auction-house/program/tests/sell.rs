@@ -10,8 +10,8 @@ use utils::{
     setup_functions::*,
 };
 
-use mtly_auction_house::{pda::find_program_as_signer_address, receipt::ListingReceipt};
 use mpl_testing_utils::{solana::airdrop, utils::Metadata};
+use mtly_auction_house::{pda::find_program_as_signer_address, receipt::ListingReceipt};
 use solana_sdk::{signer::Signer, sysvar::clock::Clock};
 use std::assert_eq;
 

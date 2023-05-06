@@ -354,6 +354,7 @@ pub mod auction_house {
         escrow_payment_bump: u8,
         buyer_price: u64,
         token_size: u64,
+        buyer_price_with_fees: Option<u64>,
     ) -> Result<()> {
         bid::auctioneer_private_bid(
             ctx,
@@ -361,6 +362,7 @@ pub mod auction_house {
             escrow_payment_bump,
             buyer_price,
             token_size,
+            buyer_price_with_fees,
         )
     }
 
@@ -388,6 +390,7 @@ pub mod auction_house {
         escrow_payment_bump: u8,
         buyer_price: u64,
         token_size: u64,
+        buyer_price_with_fees: Option<u64>,
     ) -> Result<()> {
         bid::auctioneer_public_bid(
             ctx,
@@ -395,6 +398,7 @@ pub mod auction_house {
             escrow_payment_bump,
             buyer_price,
             token_size,
+            buyer_price_with_fees,
         )
     }
 
@@ -481,6 +485,7 @@ pub mod auction_house {
         program_as_signer_bump: u8,
         buyer_price: u64,
         token_size: u64,
+        buyer_price_with_fees: Option<u64>,
     ) -> Result<()> {
         execute_sale::auctioneer_execute_sale(
             ctx,
@@ -489,6 +494,7 @@ pub mod auction_house {
             program_as_signer_bump,
             buyer_price,
             token_size,
+            buyer_price_with_fees,
         )
     }
 
@@ -501,6 +507,7 @@ pub mod auction_house {
         token_size: u64,
         partial_order_size: Option<u64>,
         partial_order_price: Option<u64>,
+        buyer_price_with_fees: Option<u64>,
     ) -> Result<()> {
         execute_sale::auctioneer_execute_partial_sale(
             ctx,
@@ -511,6 +518,7 @@ pub mod auction_house {
             token_size,
             partial_order_size,
             partial_order_price,
+            buyer_price_with_fees,
         )
     }
 

@@ -339,6 +339,7 @@ pub fn auctioneer_buy(
     buyer: &Keypair,
     auctioneer_authority: &Keypair,
     sale_price: u64,
+    sale_price_with_fees: Option<u64>,
 ) -> (mtly_auction_house::accounts::AuctioneerBuy, Transaction) {
     let seller_token_account = get_associated_token_address(owner, &test_metadata.mint.pubkey());
     let trade_state = find_trade_state_address(
@@ -380,6 +381,7 @@ pub fn auctioneer_buy(
         escrow_payment_bump: escrow_bump,
         token_size: 1,
         buyer_price: sale_price,
+        buyer_price_with_fees: sale_price_with_fees,
     };
     let data = buy_ix.data();
 
@@ -501,6 +503,7 @@ pub fn auctioneer_public_buy(
     buyer: &Keypair,
     auctioneer_authority: &Keypair,
     sale_price: u64,
+    sale_price_with_fees: Option<u64>,
 ) -> (
     mtly_auction_house::accounts::AuctioneerPublicBuy,
     Transaction,
@@ -544,6 +547,7 @@ pub fn auctioneer_public_buy(
         escrow_payment_bump: escrow_bump,
         token_size: 1,
         buyer_price: sale_price,
+        buyer_price_with_fees: sale_price_with_fees,
     };
     let data = buy_ix.data();
 
@@ -685,6 +689,7 @@ pub fn auctioneer_execute_sale(
     buyer_trade_state: &Pubkey,
     token_size: u64,
     buyer_price: u64,
+    buyer_price_with_fees: Option<u64>,
 ) -> (
     mtly_auction_house::accounts::AuctioneerExecuteSale,
     Transaction,
@@ -743,6 +748,7 @@ pub fn auctioneer_execute_sale(
             program_as_signer_bump: pas_bump,
             token_size,
             buyer_price,
+            buyer_price_with_fees,
         }
         .data(),
         accounts: execute_sale_account_metas,
@@ -1521,7 +1527,10 @@ pub fn auctioneer_withdraw(
     auctioneer_authority: &Keypair,
     sale_price: u64,
     withdraw_amount: u64,
-) -> (mtly_auction_house::accounts::AuctioneerWithdraw, Transaction) {
+) -> (
+    mtly_auction_house::accounts::AuctioneerWithdraw,
+    Transaction,
+) {
     let seller_token_account =
         get_associated_token_address(&test_metadata.token.pubkey(), &test_metadata.mint.pubkey());
     let (_buyer_trade_state, _sts_bump) = find_trade_state_address(

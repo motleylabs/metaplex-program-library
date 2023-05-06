@@ -181,4 +181,12 @@ pub enum AuctionHouseError {
     // 6044
     #[msg("This sale requires exactly one signer: either the seller or the authority.")]
     SaleRequiresExactlyOneSigner,
+
+    // 6045
+    #[msg("The buyer price with fees cannot be lower than the buyer price.")]
+    BuyerPriceWithFeesCannotBeLowerThanBuyerPrice,
+
+    // 6046
+    #[msg("The buyer price with fees must match the buyer price plus all fees.")]
+    BuyerPriceWithFeesMustMatchBuyerPricePlusFees,
 }

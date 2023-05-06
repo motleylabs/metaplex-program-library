@@ -1,11 +1,11 @@
 use std::env;
 
 use anchor_lang::prelude::Pubkey;
+use mpl_testing_utils::assert_error;
 use mtly_auction_house::{
     constants::{FEE_PAYER, MAX_NUM_SCOPES, PREFIX, TREASURY},
     AuthorityScope,
 };
-use mpl_testing_utils::assert_error;
 use solana_program::instruction::InstructionError;
 use solana_program_test::BanksClientError;
 use solana_sdk::signer::keypair::Keypair;

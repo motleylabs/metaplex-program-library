@@ -44,7 +44,7 @@ export const auctioneerSellStruct = new beet.BeetArgsStruct<
  *
  * @property [_writable_] wallet
  * @property [_writable_] tokenAccount
- * @property [] metadata
+ * @property [_writable_] metadata
  * @property [] authority
  * @property [**signer**] auctioneerAuthority
  * @property [] auctionHouse
@@ -109,7 +109,7 @@ export function createAuctioneerSellInstruction(
     },
     {
       pubkey: accounts.metadata,
-      isWritable: false,
+      isWritable: true,
       isSigner: false,
     },
     {

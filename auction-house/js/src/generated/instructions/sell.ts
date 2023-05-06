@@ -46,7 +46,7 @@ export const sellStruct = new beet.BeetArgsStruct<
  *
  * @property [] wallet
  * @property [_writable_] tokenAccount
- * @property [] metadata
+ * @property [_writable_] metadata
  * @property [] authority
  * @property [] auctionHouse
  * @property [_writable_] auctionHouseFeeAccount
@@ -107,7 +107,7 @@ export function createSellInstruction(
     },
     {
       pubkey: accounts.metadata,
-      isWritable: false,
+      isWritable: true,
       isSigner: false,
     },
     {

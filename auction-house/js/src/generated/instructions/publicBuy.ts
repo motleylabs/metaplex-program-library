@@ -47,7 +47,7 @@ export const publicBuyStruct = new beet.BeetArgsStruct<
  * @property [] transferAuthority
  * @property [] treasuryMint
  * @property [] tokenAccount
- * @property [] metadata
+ * @property [_writable_] metadata
  * @property [_writable_] escrowPaymentAccount
  * @property [] authority
  * @property [] auctionHouse
@@ -124,7 +124,7 @@ export function createPublicBuyInstruction(
     },
     {
       pubkey: accounts.metadata,
-      isWritable: false,
+      isWritable: true,
       isSigner: false,
     },
     {

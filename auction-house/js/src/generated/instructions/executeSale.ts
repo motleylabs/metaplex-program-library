@@ -48,7 +48,7 @@ export const executeSaleStruct = new beet.BeetArgsStruct<
  * @property [_writable_] seller
  * @property [_writable_] tokenAccount
  * @property [] tokenMint
- * @property [] metadata
+ * @property [_writable_] metadata
  * @property [] treasuryMint
  * @property [_writable_] escrowPaymentAccount
  * @property [_writable_] sellerPaymentReceiptAccount
@@ -134,7 +134,7 @@ export function createExecuteSaleInstruction(
     },
     {
       pubkey: accounts.metadata,
-      isWritable: false,
+      isWritable: true,
       isSigner: false,
     },
     {

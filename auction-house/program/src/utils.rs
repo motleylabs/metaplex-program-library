@@ -378,7 +378,8 @@ pub fn pay_creator_fees<'a>(
     fee_payer_seeds: &[&[u8]],
     size: u64,
     is_native: bool,
-) -> Result<u64> {
+    size_with_fees: Option<u64>,
+) -> Result<(u64, u64, u64)> {
     let metadata = Metadata::from_account_info(metadata_info)?;
     let fees = metadata.data.seller_fee_basis_points;
     let total_fee = (fees as u128)
@@ -387,9 +388,12 @@ pub fn pay_creator_fees<'a>(
         .checked_div(10000)
         .ok_or(AuctionHouseError::NumericalOverflow)? as u64;
     let mut remaining_fee = total_fee;
-    let remaining_size = size
-        .checked_sub(total_fee)
-        .ok_or(AuctionHouseError::NumericalOverflow)?;
+    let remaining_size = if size_with_fees.is_some() {
+        size
+    } else {
+        size.checked_sub(total_fee)
+            .ok_or(AuctionHouseError::NumericalOverflow)?
+    };
     match metadata.data.creators {
         Some(creators) => {
             for creator in creators {
@@ -478,10 +482,19 @@ pub fn pay_creator_fees<'a>(
             msg!("No creators found in metadata");
         }
     }
-    // Any dust is returned to the party posting the NFT
-    Ok(remaining_size
-        .checked_add(remaining_fee)
-        .ok_or(AuctionHouseError::NumericalOverflow)?)
+
+    Ok((
+        if size_with_fees.is_some() {
+            size
+        } else {
+            // Any dust is returned to the party posting the NFT
+            remaining_size
+                .checked_add(remaining_fee)
+                .ok_or(AuctionHouseError::NumericalOverflow)?
+        },
+        total_fee,
+        remaining_fee,
+    ))
 }
 
 /// Cheap method to just grab mint Pubkey from token account, instead of deserializing entire thing

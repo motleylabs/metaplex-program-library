@@ -1,5 +1,5 @@
 {
-  "version": "1.4.1",
+  "version": "1.4.8",
   "name": "auction_house",
   "instructions": [
     {
@@ -578,7 +578,7 @@
         },
         {
           "name": "metadata",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false,
           "docs": [
             "SPL token account metadata."
@@ -818,7 +818,7 @@
         },
         {
           "name": "metadata",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false,
           "docs": [
             "SPL token account metadata."
@@ -1040,6 +1040,12 @@
         {
           "name": "tokenSize",
           "type": "u64"
+        },
+        {
+          "name": "buyerPriceWithFees",
+          "type": {
+            "option": "u64"
+          }
         }
       ]
     },
@@ -1076,7 +1082,7 @@
         },
         {
           "name": "metadata",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -1280,7 +1286,7 @@
         },
         {
           "name": "metadata",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -1484,6 +1490,12 @@
         {
           "name": "tokenSize",
           "type": "u64"
+        },
+        {
+          "name": "buyerPriceWithFees",
+          "type": {
+            "option": "u64"
+          }
         }
       ]
     },
@@ -2170,7 +2182,7 @@
         },
         {
           "name": "metadata",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false,
           "docs": [
             "Metaplex metadata account decorating SPL mint account."
@@ -2836,7 +2848,7 @@
         },
         {
           "name": "metadata",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false,
           "docs": [
             "Metaplex metadata account decorating SPL mint account."
@@ -3113,6 +3125,12 @@
         {
           "name": "tokenSize",
           "type": "u64"
+        },
+        {
+          "name": "buyerPriceWithFees",
+          "type": {
+            "option": "u64"
+          }
         }
       ]
     },
@@ -3488,6 +3506,12 @@
           "type": {
             "option": "u64"
           }
+        },
+        {
+          "name": "buyerPriceWithFees",
+          "type": {
+            "option": "u64"
+          }
         }
       ]
     },
@@ -3512,7 +3536,7 @@
         },
         {
           "name": "metadata",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false,
           "docs": [
             "Metaplex metadata account decorating SPL mint account."
@@ -3730,7 +3754,7 @@
         },
         {
           "name": "metadata",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false,
           "docs": [
             "Metaplex metadata account decorating SPL mint account."
@@ -5457,12 +5481,22 @@
       "code": 6044,
       "name": "SaleRequiresExactlyOneSigner",
       "msg": "This sale requires exactly one signer: either the seller or the authority."
+    },
+    {
+      "code": 6045,
+      "name": "BuyerPriceWithFeesCannotBeLowerThanBuyerPrice",
+      "msg": "The buyer price with fees cannot be lower than the buyer price."
+    },
+    {
+      "code": 6046,
+      "name": "BuyerPriceWithFeesMustMatchBuyerPricePlusFees",
+      "msg": "The buyer price with fees must match the buyer price plus all fees."
     }
   ],
   "metadata": {
     "address": "nightTsJBrqSQfZRbQcgg9WDVKUM78GpwUJwKt64zWr",
     "origin": "anchor",
-    "binaryVersion": "0.26.0",
-    "libVersion": "0.26.0"
+    "binaryVersion": "0.27.0",
+    "libVersion": "0.27.0"
   }
 }

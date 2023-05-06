@@ -22,6 +22,7 @@ export type AuctioneerExecutePartialSaleInstructionArgs = {
   tokenSize: beet.bignum;
   partialOrderSize: beet.COption<beet.bignum>;
   partialOrderPrice: beet.COption<beet.bignum>;
+  buyerPriceWithFees: beet.COption<beet.bignum>;
 };
 /**
  * @category Instructions
@@ -42,6 +43,7 @@ export const auctioneerExecutePartialSaleStruct = new beet.FixableBeetArgsStruct
     ['tokenSize', beet.u64],
     ['partialOrderSize', beet.coption(beet.u64)],
     ['partialOrderPrice', beet.coption(beet.u64)],
+    ['buyerPriceWithFees', beet.coption(beet.u64)],
   ],
   'AuctioneerExecutePartialSaleInstructionArgs',
 );

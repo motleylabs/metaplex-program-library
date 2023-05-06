@@ -709,6 +709,7 @@ pub fn auctioneer_execute_sale<'info>(
     program_as_signer_bump: u8,
     buyer_price: u64,
     token_size: u64,
+    buyer_price_with_fees: Option<u64>,
 ) -> Result<()> {
     let auction_house = &ctx.accounts.auction_house;
     let auctioneer_authority = &ctx.accounts.auctioneer_authority;
@@ -756,6 +757,7 @@ pub fn auctioneer_execute_sale<'info>(
         token_size,
         None,
         None,
+        buyer_price_with_fees,
     )
 }
 
@@ -974,6 +976,7 @@ pub fn auctioneer_execute_partial_sale<'info>(
     token_size: u64,
     partial_order_size: Option<u64>,
     partial_order_price: Option<u64>,
+    buyer_price_with_fees: Option<u64>,
 ) -> Result<()> {
     let auction_house = &ctx.accounts.auction_house;
     let auctioneer_authority = &ctx.accounts.auctioneer_authority;
@@ -1023,6 +1026,7 @@ pub fn auctioneer_execute_partial_sale<'info>(
         token_size,
         partial_order_size,
         partial_order_price,
+        buyer_price_with_fees,
     )
 }
 
@@ -1038,6 +1042,7 @@ fn auctioneer_execute_sale_logic<'c, 'info>(
     token_size: u64,
     partial_order_size: Option<u64>,
     partial_order_price: Option<u64>,
+    buyer_price_with_fees: Option<u64>,
 ) -> Result<()> {
     let buyer = &accounts.buyer;
     let seller = &accounts.seller;
@@ -1079,6 +1084,12 @@ fn auctioneer_execute_sale_logic<'c, 'info>(
         return Err(
             AuctionHouseError::CannotMatchFreeSalesWithoutAuctionHouseOrSellerSignoff.into(),
         );
+    }
+
+    if let Some(bpwf) = buyer_price_with_fees {
+        if bpwf < buyer_price {
+            return Err(AuctionHouseError::BuyerPriceWithFeesCannotBeLowerThanBuyerPrice.into());
+        }
     }
 
     let token_account_mint = get_mint_from_token_account(&token_account_clone)?;
@@ -1245,7 +1256,7 @@ fn auctioneer_execute_sale_logic<'c, 'info>(
 
     let remaining_accounts = &mut remaining_accounts.iter();
 
-    let buyer_leftover_after_royalties = pay_creator_fees(
+    let (buyer_leftover_after_royalties, total_royalties, remaining_royalties) = pay_creator_fees(
         remaining_accounts,
         &metadata_clone,
         &escrow_clone,
@@ -1260,6 +1271,7 @@ fn auctioneer_execute_sale_logic<'c, 'info>(
         fee_payer_seeds,
         price,
         is_native,
+        buyer_price_with_fees,
     )?;
 
     let auction_house_fee_paid = pay_auction_house_fees(
@@ -1273,9 +1285,19 @@ fn auctioneer_execute_sale_logic<'c, 'info>(
         is_native,
     )?;
 
-    let buyer_leftover_after_royalties_and_house_fee = buyer_leftover_after_royalties
-        .checked_sub(auction_house_fee_paid)
-        .ok_or(AuctionHouseError::NumericalOverflow)?;
+    if let Some(bpwf) = buyer_price_with_fees {
+        if bpwf != buyer_price + total_royalties + auction_house_fee_paid {
+            return Err(AuctionHouseError::BuyerPriceWithFeesMustMatchBuyerPricePlusFees.into());
+        }
+    }
+
+    let buyer_leftover_after_royalties_and_house_fee = if buyer_price_with_fees.is_some() {
+        price
+    } else {
+        buyer_leftover_after_royalties
+            .checked_sub(auction_house_fee_paid)
+            .ok_or(AuctionHouseError::NumericalOverflow)?
+    };
 
     if !is_native {
         if seller_payment_receipt_account.data_is_empty() {
@@ -1335,6 +1357,28 @@ fn auctioneer_execute_sale_logic<'c, 'info>(
             ],
             &[&escrow_signer_seeds],
         )?;
+
+        if buyer_price_with_fees.is_some() && remaining_royalties > 0 {
+            // return overpaid royalties
+            msg!(
+                "Returning {} in overpaid royalties to buyer",
+                remaining_royalties
+            );
+
+            invoke_signed(
+                &system_instruction::transfer(
+                    escrow_payment_account.key,
+                    buyer.key,
+                    remaining_royalties,
+                ),
+                &[
+                    escrow_payment_account.to_account_info(),
+                    buyer.to_account_info(),
+                    system_program.to_account_info(),
+                ],
+                &[&escrow_signer_seeds],
+            )?;
+        }
     }
 
     if buyer_receipt_token_account.data_is_empty() {
@@ -1714,7 +1758,7 @@ fn execute_sale_logic<'c, 'info>(
 
     let remaining_accounts = &mut remaining_accounts.iter();
 
-    let buyer_leftover_after_royalties = pay_creator_fees(
+    let (buyer_leftover_after_royalties, _, _) = pay_creator_fees(
         remaining_accounts,
         &metadata_clone,
         &escrow_clone,
@@ -1729,6 +1773,7 @@ fn execute_sale_logic<'c, 'info>(
         fee_payer_seeds,
         price,
         is_native,
+        None,
     )?;
 
     let auction_house_fee_paid = pay_auction_house_fees(

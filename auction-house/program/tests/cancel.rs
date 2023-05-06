@@ -9,11 +9,11 @@ use utils::{
     setup_functions::*,
 };
 
-use mtly_auction_house::{pda::find_program_as_signer_address, receipt::ListingReceipt};
 use mpl_token_metadata::{
     pda::find_token_record_account,
     state::{PrintSupply, TokenStandard},
 };
+use mtly_auction_house::{pda::find_program_as_signer_address, receipt::ListingReceipt};
 
 #[tokio::test]
 async fn cancel_listing() {

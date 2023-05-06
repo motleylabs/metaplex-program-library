@@ -1,7 +1,7 @@
 {
   "name": "@motleylabs/mtly-auction-house",
-  "version": "2.5.1",
-  "contractVersion": "1.4.1",
+  "version": "2.5.6",
+  "contractVersion": "1.4.8",
   "description": "MPL Auction House JavaScript API.",
   "main": "dist/src/mpl-auction-house.js",
   "types": "dist/src/mpl-auction-house.d.ts",
